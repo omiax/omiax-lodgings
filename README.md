@@ -1,0 +1,1 @@
+# omiax-lodgings
