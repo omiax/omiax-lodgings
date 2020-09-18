@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     # my apps
     "user",
     "lodge",
+    # "payments",
 ]
 
 REST_FRAMEWORK = {

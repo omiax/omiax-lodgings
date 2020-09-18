@@ -1,7 +1,12 @@
 from django.db import models
 from django.conf import settings
-from django.dispatch import receiver
-from django.db.models.signals import post_save
+# from django.dispatch import receiver
+# from django.db.models.signals import post_save
+
+# import datetime
+
+# def current_year():
+#     return datetime.date.today().year
 
 
 def image_file_path(instance, filename):
@@ -26,6 +31,8 @@ class Lodge(models.Model):
     standard_price = models.DecimalField(default=0.00,
                                          max_digits=8,
                                          decimal_places=2)
+
+    # def save(self, *args, **kwargs):
 
     def __str__(self):
         return self.name
@@ -52,6 +59,9 @@ class Room(models.Model):
                                      max_digits=8,
                                      decimal_places=2)
     room_mates = models.CharField(max_length=255, blank=True, null=True)
+    rent_start_date = models.DateField(blank=True, null=True)
+    rent_end_date = models.DateField(blank=True, null=True)
+    transaction_id = models.PositiveIntegerField(blank=True, null=True)
 
     class Meta:
         unique_together = (
@@ -73,16 +83,3 @@ class Room(models.Model):
 
     def __str__(self):
         return f'{self.lodge} - Room: {self.room_number}'
-
-
-@receiver(post_save, sender=Lodge)
-def generate_rooms(sender, instance, created, **kwargs):
-    if created:
-        room_nums = instance.num_of_rooms
-        objs = [
-            Room(lodge=instance,
-                 room_number=i,
-                 room_price=instance.standard_price)
-            for i in range(1, room_nums + 1)
-        ]
-        Room.objects.bulk_create(objs)
