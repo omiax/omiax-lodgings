@@ -26,11 +26,14 @@ class UserSerializer(serializers.ModelSerializer):
                         message="This username already exist!")
     ])
     password = serializers.CharField(min_length=8, write_only=True)
+    email = serializers.EmailField(required=True)
+    address = serializers.CharField()
+    state = serializers.CharField()
 
     class Meta:
         model = models.User
-        fields = ('first_name', 'last_name', 'username', 'password',
-                  'phone_number')
+        fields = ('first_name', 'last_name', 'username', 'password', 'email',
+                  'phone_number', 'address', 'state')
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
