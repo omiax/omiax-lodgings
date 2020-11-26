@@ -9,7 +9,7 @@ from django.conf import settings
 
 class Payments(models.Model):
     tenant = models.ForeignKey(settings.AUTH_USER_MODEL, models.PROTECTED)
-    amount = models.DecimalField(max_digits=6, decimal_places=2)
+    amount = models.DecimalField(default=0.00, max_digits=8, decimal_places=2)
     rent_start_date = models.DateField(blank=True, null=True)
     rent_end_date = models.DateField(blank=True, null=True)
     transaction_id = models.PositiveIntegerField(blank=True)

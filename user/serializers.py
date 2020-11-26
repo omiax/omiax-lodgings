@@ -2,6 +2,8 @@ from rest_framework_simplejwt.serializers import \
     TokenObtainPairSerializer
 from rest_framework.validators import UniqueValidator
 from rest_framework import serializers
+from drf_writable_nested.serializers import WritableNestedModelSerializer
+
 from user import models
 
 
@@ -44,3 +46,26 @@ class UserSerializer(serializers.ModelSerializer):
             instance.set_password(password)
         instance.save()
         return instance
+
+
+class EmergencyInfoSerializer(serializers.ModelSerializer):
+    '''Emergency Contact details
+    '''
+    class Meta:
+        model = models.EmergencyInfo
+        fields = ('tenant', 'name', 'contact_address', 'occupation',
+                  'place_of_work', 'phone')
+
+
+class UserDetailSerializer(WritableNestedModelSerializer):
+    """personal details
+    state_of_origin, occupation, place_of_work, bank_account_name,
+    account_number
+    """
+    emergency = EmergencyInfoSerializer(allow_null=True)
+
+    class Meta:
+        model = models.User
+        fields = ('id', 'state_of_origin', 'occupation', 'place_of_work',
+                  'bank_account_name', 'account_number', 'emergency')
+        read_only_fields = ('id',)

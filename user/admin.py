@@ -10,9 +10,16 @@ from user import models
 # admin.site.register(models.User, CustomUserAdmin)
 
 
+class EmergencyInfoInline(admin.StackedInline):
+    model = models.EmergencyInfo
+
+
 class UserAdmin(BaseUserAdmin):
     ordering = ["id"]
-    list_display = ["username", "phone_number", "email"]
+    list_display = ["username", "phone_number", "email", "get_lodge"]
+    inlines = [
+        EmergencyInfoInline,
+    ]
     fieldsets = (
         (None, {
             "fields": ("username", "password")
@@ -28,6 +35,13 @@ class UserAdmin(BaseUserAdmin):
                     "email",
                     "address",
                     "state",
+                    # personal details
+                    "state_of_origin",
+                    "occupation",
+                    "place_of_work",
+                    # Bank details for caution fees refund
+                    "bank_account_name",
+                    "account_number",
                 )
             },
         ),
@@ -52,5 +66,17 @@ class UserAdmin(BaseUserAdmin):
         },
     ), )
 
+    def get_queryset(self, request):
+        qs = super(UserAdmin, self).get_queryset(request)
+        return qs.prefetch_related('tenants')
+
+    def get_lodge(self, obj):
+        return list(obj.tenants.all())
+
+
+class EmergencyInfoAdmin(admin.ModelAdmin):
+    list_display = ['tenant', 'name', 'contact_address', 'phone']
+
 
 admin.site.register(models.User, UserAdmin)
+admin.site.register(models.EmergencyInfo)

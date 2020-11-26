@@ -1,7 +1,8 @@
 from django.db import models
 from django.conf import settings
-# from django.dispatch import receiver
-# from django.db.models.signals import post_save
+
+# https://stackoverflow.com/questions/3648421/only-accept-a-certain-file-type-in-filefield-server-side
+# from django.core.validators import FileExtensionValidator
 
 # import datetime
 
@@ -12,6 +13,11 @@ from django.conf import settings
 def image_file_path(instance, filename):
     """Generate file path for lodge image"""
     return '/'.join(['lodges', str(instance.name), filename])
+
+
+# def agreement_file_path(instance, filename):
+#     """Generate file path for lodge image"""
+#     return '/'.join(['lodges', 'agreement', str(instance.name), filename])
 
 
 class Lodge(models.Model):
@@ -32,16 +38,18 @@ class Lodge(models.Model):
                                          max_digits=8,
                                          decimal_places=2)
 
+    # agreement = models.FileField(
+    #     blank=True,
+    #     null=True,
+    #     upload_to=agreement_file_path,
+    #     validators=[FileExtensionValidator(allowed_extensions=['pdf'])])
+
     # def save(self, *args, **kwargs):
 
     def __str__(self):
         return self.name
 
-
-# class Legal(models.Model):
-#     lodge = models.ForeignKey(Lodge, models.CASCADE, related_name="lodge")
-#     terms_n_conditions = models.CharField(blank=True, null=True)
-#     agree = models.BooleanField(blank=True, null=True)
+# @TODO add unigue=True for tenant to room to make like a OneToOne
 
 
 class Room(models.Model):
@@ -83,3 +91,9 @@ class Room(models.Model):
 
     def __str__(self):
         return f'{self.lodge} - Room: {self.room_number}'
+
+
+# class Legal(models.Model):
+#     lodge = models.ForeignKey(Lodge, models.CASCADE, related_name="lodge")
+#     agreement = models.CharField(blank=True, null=True)
+#     terms_agreed = models.BooleanField(blank=True, null=True)

@@ -1,10 +1,14 @@
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework import permissions, status
+from rest_framework import permissions, status, generics
+from rest_framework.mixins import CreateModelMixin
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from user import serializers
+
+from django.contrib.auth import get_user_model
+User = get_user_model()
 
 
 class ObtainTokenPairWithUsernameView(TokenObtainPairView):
@@ -39,3 +43,18 @@ class LogoutAndBlacklistRefreshTokenForUserView(APIView):
             return Response(status=status.HTTP_205_RESET_CONTENT)
         except Exception:
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class UpdateUserDetail(CreateModelMixin, generics.RetrieveUpdateAPIView):
+    permission_classes = (permissions.AllowAny, )
+    authentication_classes = ()
+
+    """
+        A viewset for viewing and editing user instances.
+    """
+    serializer_class = serializers.UserDetailSerializer
+    queryset = User.objects.all()
+    lookup_field = "id"
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)

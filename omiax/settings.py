@@ -47,6 +47,10 @@ INSTALLED_APPS = [
     # "payments",
 ]
 
+# @TODO cron jobs
+# send reminder emails or text message for room expiry date
+# flushexpiredtokens
+
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES':
     ('rest_framework.permissions.IsAuthenticated', ),
@@ -122,7 +126,7 @@ DATABASES = {
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME":
-        "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+        "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",  # noqa
     },
     {
         "NAME":
@@ -146,7 +150,9 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "en-us"
 
+# @TODO change later
 TIME_ZONE = "UTC"
+# TIME_ZONE = "Africa/Lagos"
 
 USE_I18N = True
 
