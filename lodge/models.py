@@ -1,8 +1,12 @@
 from django.db import models
 from django.conf import settings
 
+from django.core.validators import MaxValueValidator, MinValueValidator
+
 # https://stackoverflow.com/questions/3648421/only-accept-a-certain-file-type-in-filefield-server-side
 # from django.core.validators import FileExtensionValidator
+
+from tinymce.models import HTMLField
 
 # import datetime
 
@@ -15,15 +19,52 @@ def image_file_path(instance, filename):
     return '/'.join(['lodges', str(instance.name), filename])
 
 
-# def agreement_file_path(instance, filename):
-#     """Generate file path for lodge image"""
-#     return '/'.join(['lodges', 'agreement', str(instance.name), filename])
+STATE_CHOICES = [
+    ('', ''),
+    ('Abia', 'Abia'),
+    ('Abuja (FCT)', 'Abuja (FCT)'),
+    ('Adamawa', 'Adamawa'),
+    ('Akwa Ibom', 'Akwa Ibom'),
+    ('Anambra', 'Anambra'),
+    ('Bauchi', "Bauchi"),
+    ('Bayelsa', "Bayelsa"),
+    ('Benue', "Benue"),
+    ('Borno', "Borno"),
+    ('Cross River', "Cross River"),
+    ('Delta', "Delta"),
+    ('Ebonyi', "Ebonyi"),
+    ('Edo', "Edo"),
+    ('Ekiti', "Ekiti"),
+    ('Enugu', "Enugu"),
+    ('Gombe', "Gombe"),
+    ('Imo', "Imo"),
+    ('Jigawa', "Jigawa"),
+    ('Kaduna', "Kaduna"),
+    ('Kano', "Kano"),
+    ('Katsina', "Katsina"),
+    ('Kebbi', "Kebbi"),
+    ('Kogi', "Kogi"),
+    ('Kwara', "Kwara"),
+    ('Lagos', "Lagos"),
+    ('Nasarawa', "Nasarawa"),
+    ('Niger', "Niger"),
+    ('Ogun', "Ogun"),
+    ('Ondo', "Ondo"),
+    ('Osun', "Osun"),
+    ('Oyo', "Oyo"),
+    ('Plateau', "Plateau"),
+    ('Rivers', "Rivers"),
+    ('Sokoto', "Sokoto"),
+    ('Taraba', "Taraba"),
+    ('Yobe', "Yobe"),
+    ('Zamfara', "Zamfara"),
+]
 
 
 class Lodge(models.Model):
     name = models.CharField(max_length=100)
     address = models.CharField(max_length=255)
-    state = models.CharField(max_length=80)
+    state = models.CharField(max_length=80, choices=STATE_CHOICES)
     country = models.CharField(max_length=100, default="Nigeria")
     image = models.ImageField(blank=True, null=True, upload_to=image_file_path)
     water = models.BooleanField(blank=True, null=True)
@@ -38,16 +79,19 @@ class Lodge(models.Model):
                                          max_digits=8,
                                          decimal_places=2)
 
-    # agreement = models.FileField(
-    #     blank=True,
-    #     null=True,
-    #     upload_to=agreement_file_path,
-    #     validators=[FileExtensionValidator(allowed_extensions=['pdf'])])
+    caution_deposit = models.IntegerField(
+        null=True,
+        blank=True,
+        default=3,
+        validators=[MaxValueValidator(100),
+                    MinValueValidator(1)])
+    agreement = HTMLField(blank=True, null=True)
 
     # def save(self, *args, **kwargs):
 
     def __str__(self):
         return self.name
+
 
 # @TODO add unigue=True for tenant to room to make like a OneToOne
 
@@ -69,7 +113,8 @@ class Room(models.Model):
     room_mates = models.CharField(max_length=255, blank=True, null=True)
     rent_start_date = models.DateField(blank=True, null=True)
     rent_end_date = models.DateField(blank=True, null=True)
-    transaction_id = models.PositiveIntegerField(blank=True, null=True)
+    transaction_id = models.CharField(max_length=255, blank=True, null=True)
+    terms_agreed = models.BooleanField(default=False)
 
     class Meta:
         unique_together = (

@@ -24,6 +24,13 @@ class RoomSerializer(serializers.ModelSerializer):
         read_only_fields = ('id', 'lodge', 'occupied', 'room_number')
 
 
+class RoomBookingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Room
+        fields = ("room_mates", "rent_start_date", "rent_end_date",
+                  "transaction_id", "terms_agreed")
+
+
 class RoomIDSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Room
@@ -57,7 +64,7 @@ class LodgeSerializer(serializers.HyperlinkedModelSerializer):
         fields = [
             'id', 'name', 'address', 'state', 'water', 'electricity',
             'num_of_rooms', 'image', 'details', 'standard_price',
-            'rooms_listing', 'lodge_listing'
+            'caution_deposit', 'agreement', 'rooms_listing', 'lodge_listing'
             # 'tenants',
         ]
-        # read_only_fields = ('id', )
+        read_only_fields = ('id', )

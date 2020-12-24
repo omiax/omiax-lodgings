@@ -66,6 +66,8 @@ class UserAdmin(BaseUserAdmin):
         },
     ), )
 
+    # show list display of a related models (lodge - room)
+
     def get_queryset(self, request):
         qs = super(UserAdmin, self).get_queryset(request)
         return qs.prefetch_related('tenants')

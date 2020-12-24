@@ -33,6 +33,10 @@ class User(AbstractUser):
     bank_account_name = models.CharField(max_length=255, blank=True, null=True)
     account_number = models.PositiveIntegerField(blank=True, null=True)
 
+    # # @TODO force emails to be unique
+    class Meta:
+        unique_together = ('email', )
+
 
 class EmergencyInfo(models.Model):
     tenant = models.OneToOneField(settings.AUTH_USER_MODEL,
@@ -44,7 +48,6 @@ class EmergencyInfo(models.Model):
     place_of_work = models.CharField(max_length=255, blank=True, null=True)
     phone = models.CharField(
         max_length=14,
-        unique=True,
         validators=[RegexValidator(r"^(\+\d{1,3}[- ]?|[0])?\d{10}$")])
 
     def __str__(self):
@@ -63,10 +66,10 @@ def password_reset_token_created(sender, instance, reset_password_token, *args,
 
     send_mail(
         # title:
-        "Password Reset for {title}".format(title="Omiax Lodgings"),
+        "Password Reset for {title}".format(title="Omiax Accommodations"),
         # message:
         email_plaintext_message,
         # from:
-        "noreply@somehost.local",
+        settings.EMAIL_HOST_USER,
         # to:
         [reset_password_token.user.email])

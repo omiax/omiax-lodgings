@@ -3,6 +3,7 @@ from django.db.models.signals import post_save
 
 from lodge.models import Lodge, Room
 # from payments import Payments
+# @TODO Caution
 
 
 @receiver(post_save, sender=Lodge)

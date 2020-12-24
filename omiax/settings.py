@@ -13,6 +13,12 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 import os
 from datetime import timedelta
 
+from environ import Env
+
+env = Env()
+
+Env.read_env()
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -20,12 +26,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "y+9yqmlh!pf=7z85ziky_829=fu%ehnn7ba_(gu-sot=n6gjkr"
+SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool("DEBUG")
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [x for x in env.list('ALLOWED_HOSTS')]
 
 # Application definition
 
@@ -41,11 +47,22 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
     'django_rest_passwordreset',
+    'tinymce',
+    'django_q',
+
     # my apps
     "user",
     "lodge",
-    # "payments",
+    "payments",
 ]
+
+# Configure your Q cluster
+# More details https://django-q.readthedocs.io/en/latest/configure.html
+# https://mattsegal.dev/simple-scheduled-tasks.html
+Q_CLUSTER = {
+    "name": "omiax",
+    "orm": "default",  # Use Django's ORM + database for broker
+}
 
 # @TODO cron jobs
 # send reminder emails or text message for room expiry date
@@ -73,7 +90,9 @@ SIMPLE_JWT = {
     'TOKEN_TYPE_CLAIM': 'token_type',
 }
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_CONFIG = env.email_url('EMAIL_URL')
+vars().update(EMAIL_CONFIG)
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -84,6 +103,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'csp.middleware.CSPMiddleware',
 ]
 
 # CORS_ORIGIN_ALLOW_ALL = False
@@ -119,6 +139,10 @@ DATABASES = {
         "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
     }
 }
+if DEBUG is False:
+    DATABASES = {
+        "default": env.db()
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
@@ -151,8 +175,8 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = "en-us"
 
 # @TODO change later
-TIME_ZONE = "UTC"
-# TIME_ZONE = "Africa/Lagos"
+# TIME_ZONE = "UTC"
+TIME_ZONE = "Africa/Lagos"
 
 USE_I18N = True
 
@@ -170,3 +194,39 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 AUTH_USER_MODEL = "user.User"
+
+# Content Security Policy
+# set iframe path
+# CSP_DEFAULT_SRC = ["'none'", ]
+
+# CSP_FRAME_SRC = ["http://127.0.0.1:8000", "http://127.0.0.1:3000"]
+# CSP_FRAME_ANCESTORS = ["'self'", "http://127.0.0.1:3000"]
+
+# X_FRAME_OPTIONS = 'ALLOW-FROM http://127.0.0.1:3000'
+
+# TINYMCE_DEFAULT_CONFIG = {
+#     'cleanup_on_startup': True,
+#     'custom_undo_redo_levels': 20,
+#     'selector': 'textarea',
+#     'theme': 'silver',
+#     'plugins': '''
+#             textcolor save link image media preview codesample contextmenu
+#             table code lists fullscreen  insertdatetime  nonbreaking
+#             contextmenu directionality searchreplace wordcount visualblocks
+#             visualchars code fullscreen autolink lists  charmap print  hr
+#             anchor pagebreak
+#             ''',
+#     'toolbar1': '''
+#             fullscreen preview bold italic underline | fontselect,
+#             fontsizeselect  | forecolor backcolor | alignleft alignright |
+#             aligncenter alignjustify | indent outdent | bullist numlist table |
+#             | link image media | codesample |
+#             ''',
+#     'toolbar2': '''
+#             visualblocks visualchars |
+#             charmap hr pagebreak nonbreaking anchor |  code |
+#             ''',
+#     'contextmenu': 'formats | link image',
+#     'menubar': True,
+#     'statusbar': True,
+# }

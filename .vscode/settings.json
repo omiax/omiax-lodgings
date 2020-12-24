@@ -1,5 +1,11 @@
 {
     "python.linting.pylintEnabled": false,
     "python.linting.flake8Enabled": true,
-    "python.linting.enabled": true
+    "python.linting.flake8Args": [
+        "--max-line-length=120",
+        "--ignore=E402,F841,F401,E302,E305",
+    ],
+    "python.linting.enabled": true,
+    "python.formatting.provider":"autopep8",
+    "python.formatting.blackPath": "/home/idy/.local/lib/python3.7/site-packages/autopep8.py"
 }
