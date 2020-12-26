@@ -8,7 +8,7 @@ User = get_user_model()
 
 
 class Command(BaseCommand):
-    help = 'Generate Su User, If none exist'
+    help = 'Generate Superuser, If none exist!'
 
     def handle(self, *args, **options):
         admin_exist = User.objects.filter(is_superuser=True).count()
