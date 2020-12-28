@@ -80,5 +80,6 @@ class EmergencyInfoAdmin(admin.ModelAdmin):
     list_display = ['tenant', 'name', 'contact_address', 'phone']
 
 
+admin.site.site_header = 'Omiax Apartments Control'
 admin.site.register(models.User, UserAdmin)
 admin.site.register(models.EmergencyInfo)

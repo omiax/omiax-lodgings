@@ -23,6 +23,7 @@ class PaymentAdmin(admin.ModelAdmin):
          "payment_ref", "payment_type", "payment_plan", "customer_id",
          "account_id", "app_fee", "merchant_fee", "manual_pay")
     }))
+    readonly_fields = ('transaction_id',)
 
 
 admin.site.register(models.Payment, PaymentAdmin)
