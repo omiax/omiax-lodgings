@@ -1,3 +1,4 @@
+from dateutil.relativedelta import relativedelta
 from django.db import models
 from django.conf import settings
 
@@ -7,8 +8,9 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 # from django.core.validators import FileExtensionValidator
 
 from tinymce.models import HTMLField
+import uuid
 
-# import datetime
+import datetime
 
 # def current_year():
 #     return datetime.date.today().year
@@ -129,6 +131,13 @@ class Room(models.Model):
     def save(self, *args, **kwargs):
         if self.tenant is not None:
             self.occupied = True
+            if self.transaction_id is None:
+                self.transaction_id = uuid.uuid4()
+                self.terms_agreed = True
+            if self.rent_start_date is None:
+                self.rent_start_date = datetime.date.today()
+            if self.rent_end_date is None:
+                self.rent_end_date = datetime.date.today() + datetime.timedelta(weeks=52)  # 47.9)
         else:
             self.occupied = False
 

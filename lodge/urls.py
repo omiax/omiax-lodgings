@@ -9,4 +9,11 @@ router.register('rooms', views.RoomViewSet, basename="rooms")
 
 app_name = 'lodge'
 
-urlpatterns = [path('', include(router.urls))]
+urlpatterns = [
+    path('', include(router.urls)),
+    path(
+        '<int:room_id>/reset_room',
+        views.reset_room,
+        name='reset_room'
+    )
+]

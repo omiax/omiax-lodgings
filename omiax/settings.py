@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 
 import os
 from datetime import timedelta
-
+from django.conf.locale.en import formats as en_formats
 from environ import Env
 
 env = Env()
@@ -49,12 +49,14 @@ INSTALLED_APPS = [
     'django_rest_passwordreset',
     'tinymce',
     'django_q',
-
     # my apps
     "user",
     "lodge",
     "payments",
 ]
+
+
+en_formats.DATETIME_FORMAT = "d-m-Y H:i:s"
 
 # Configure your Q cluster
 # More details https://django-q.readthedocs.io/en/latest/configure.html
@@ -108,14 +110,14 @@ MIDDLEWARE = [
 
 # CORS_ORIGIN_ALLOW_ALL = False
 
-CORS_ORIGIN_WHITELIST = ["http://localhost:3000", "http://127.0.0.1:3000"]
+CORS_ORIGIN_WHITELIST = ['http://' + x for x in env.list('ALLOWED_HOSTS')]
 
 ROOT_URLCONF = "omiax.urls"
 
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": ['omiax/templates'],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -172,7 +174,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = "en-NG"
 
 # @TODO change later
 # TIME_ZONE = "UTC"

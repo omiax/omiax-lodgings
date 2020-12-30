@@ -1,3 +1,6 @@
+from django.contrib.admin.views.decorators import staff_member_required
+from django.http import HttpResponseRedirect
+
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import action
@@ -44,3 +47,17 @@ class RoomViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(lodge__id=lodge_id)
 
         return queryset
+
+
+@staff_member_required
+def reset_room(request, room_id):
+    room = Room.objects.get(pk=room_id)
+    room.tenant = None
+    room.occupied = False
+    room.room_mates = None
+    room.rent_start_date = None
+    room.rent_end_date = None
+    room.transaction_id = None
+    room.terms_agreed = False
+    room.save()
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
