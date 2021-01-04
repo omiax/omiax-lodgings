@@ -63,6 +63,11 @@ en_formats.DATETIME_FORMAT = "d-m-Y H:i:s"
 # https://mattsegal.dev/simple-scheduled-tasks.html
 Q_CLUSTER = {
     "name": "omiax",
+    'workers': 4,
+    'timeout': 90,
+    'retry': 120,
+    'queue_limit': 50,
+    'bulk': 10,
     "orm": "default",  # Use Django's ORM + database for broker
 }
 
@@ -110,7 +115,9 @@ MIDDLEWARE = [
 
 # CORS_ORIGIN_ALLOW_ALL = False
 
-CORS_ORIGIN_WHITELIST = ['http://' + x for x in env.list('ALLOWED_HOSTS')]
+# CORS_ORIGIN_WHITELIST = ['http://' + x for x in env.list('ALLOWED_HOSTS')]
+CORS_ORIGIN_WHITELIST = ['http://127.0.0.1:3000', 'http://localhost:3000']
+
 
 ROOT_URLCONF = "omiax.urls"
 

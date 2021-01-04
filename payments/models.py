@@ -1,11 +1,10 @@
 from django.db import models
 from django.conf import settings
 
-# from django.dispatch import receiver
-# from django.db.models.signals import pre_save
+import uuid
+import datetime
 
-# import datetime
-# import requests
+
 # from environ import Env
 
 from lodge.models import Lodge, Room
@@ -14,6 +13,11 @@ from lodge.models import Lodge, Room
 
 # def current_year():
 #     return datetime.date.today().year
+
+
+def image_file_path(instance, filename):
+    """Generate file path for lodge image"""
+    return '/'.join(['payments', str(instance.lodge.name), filename])
 
 
 class Payment(models.Model):
@@ -27,7 +31,7 @@ class Payment(models.Model):
     room = models.ForeignKey(Room, models.SET_NULL, blank=True, null=True)
 
     tenant_name = models.CharField(max_length=255, blank=True)
-    amount = models.DecimalField(default=0.00, max_digits=8, decimal_places=2)
+    amount = models.DecimalField(default=0.00, max_digits=12, decimal_places=2)
     rent_start_date = models.DateField(blank=True, null=True)
     rent_end_date = models.DateField(blank=True, null=True)
     transaction_id = models.CharField(max_length=255, blank=True, unique=True)
@@ -51,12 +55,29 @@ class Payment(models.Model):
     merchant_fee = models.IntegerField(null=True, blank=True)
 
     manual_pay = models.BooleanField(default=False)
+    # Payment verification Image
+    payment_image = models.ImageField(blank=True, null=True, upload_to=image_file_path)
 
     def __str__(self):
         return f"{self.amount} naira - {self.rent_start_date} to {self.rent_end_date}"  # noqa
 
-    # def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs):
+        if self.lodge is None:
+            self.lodge = self.room.lodge
 
-    #     if not self.id:
-    #         self.name = f"{self.user.first_name} {self.user.last_name}"
-    #     super().save(*args, **kwargs)
+        if self.transaction_id == "":
+            self.transaction_id = uuid.uuid1()
+            self.terms_agreed = True
+
+        if self.rent_start_date is None:
+            self.rent_start_date = datetime.date.today()
+        if self.rent_end_date is None:
+            self.rent_end_date = datetime.date.today() + datetime.timedelta(weeks=52)
+
+        if not self.tenant_name:
+            if self.tenant.first_name or self.tenant.last_name:
+                self.tenant_name = f"{self.tenant.first_name} {self.tenant.last_name}"
+            else:
+                self.tenant_name = self.tenant.username
+
+        super().save(*args, **kwargs)

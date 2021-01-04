@@ -18,7 +18,7 @@ import datetime
 
 def image_file_path(instance, filename):
     """Generate file path for lodge image"""
-    return '/'.join(['lodges', str(instance.name), filename])
+    return '/'.join(['lodges', str(instance.lodge.name), filename])
 
 
 STATE_CHOICES = [
@@ -68,7 +68,7 @@ class Lodge(models.Model):
     address = models.CharField(max_length=255)
     state = models.CharField(max_length=80, choices=STATE_CHOICES)
     country = models.CharField(max_length=100, default="Nigeria")
-    image = models.ImageField(blank=True, null=True, upload_to=image_file_path)
+    # image = models.ImageField(blank=True, null=True, upload_to=image_file_path)
     water = models.BooleanField(blank=True, null=True)
     electricity = models.BooleanField(blank=True, null=True)
     num_of_rooms = models.PositiveSmallIntegerField(null=False)
@@ -96,6 +96,10 @@ class Lodge(models.Model):
 
 
 # @TODO add unigue=True for tenant to room to make like a OneToOne
+
+class LodgeImage(models.Model):
+    lodge = models.ForeignKey(Lodge, models.CASCADE, default=None, related_name="lodge_images")
+    pictures = models.ImageField(blank=True, null=True, upload_to=image_file_path)
 
 
 class Room(models.Model):
@@ -131,13 +135,13 @@ class Room(models.Model):
     def save(self, *args, **kwargs):
         if self.tenant is not None:
             self.occupied = True
-            if self.transaction_id is None:
-                self.transaction_id = uuid.uuid4()
-                self.terms_agreed = True
-            if self.rent_start_date is None:
-                self.rent_start_date = datetime.date.today()
-            if self.rent_end_date is None:
-                self.rent_end_date = datetime.date.today() + datetime.timedelta(weeks=52)  # 47.9)
+            # if self.transaction_id is None:
+            #     self.transaction_id = uuid.uuid4()
+            #     self.terms_agreed = True
+            # if self.rent_start_date is None:
+            #     self.rent_start_date = datetime.date.today()
+            # if self.rent_end_date is None:
+            #     self.rent_end_date = datetime.date.today() + datetime.timedelta(weeks=52)  # 47.9)
         else:
             self.occupied = False
 

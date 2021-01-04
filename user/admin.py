@@ -46,9 +46,11 @@ class UserAdmin(BaseUserAdmin):
             },
         ),
         (_("Permissions"), {
+            "classes": ("collapse",),
             "fields": ("is_active", "is_staff", "is_superuser", "groups")
         }),
         (_("Important dates"), {
+            "classes": ("collapse",),
             "fields": ("last_login", "date_joined")
         }),
     )

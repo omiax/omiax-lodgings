@@ -1,14 +1,20 @@
-from django.contrib.admin.views.decorators import staff_member_required
-from django.http import HttpResponseRedirect
-
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import action
 # from rest_framework.permissions import IsAdminUser
 from rest_framework import permissions
+from rest_framework.parsers import MultiPartParser, FormParser
 
 from lodge.models import Lodge, Room
 from lodge.serializers import LodgeSerializer, RoomSerializer
+#  LodgeImageSerializer
+
+
+# class LodgeImageViewSet(viewsets.ModelViewSet):
+#     permission_classes = (permissions.AllowAny, )
+#     parser_classes = (MultiPartParser, FormParser,)
+#     queryset = Lodge.objects.all()
+#     serializer_class = LodgeImageSerializer
 
 
 class LodgeViewSet(viewsets.ModelViewSet):
@@ -23,6 +29,7 @@ class LodgeViewSet(viewsets.ModelViewSet):
 
 class RoomViewSet(viewsets.ModelViewSet):
     # queryset = Room.objects.all()
+    # permission_classes = (permissions.AllowAny, )
     serializer_class = RoomSerializer
 
     @action(detail=True, methods=['get'])
@@ -47,17 +54,3 @@ class RoomViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(lodge__id=lodge_id)
 
         return queryset
-
-
-@staff_member_required
-def reset_room(request, room_id):
-    room = Room.objects.get(pk=room_id)
-    room.tenant = None
-    room.occupied = False
-    room.room_mates = None
-    room.rent_start_date = None
-    room.rent_end_date = None
-    room.transaction_id = None
-    room.terms_agreed = False
-    room.save()
-    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))

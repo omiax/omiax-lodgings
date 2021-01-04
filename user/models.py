@@ -30,7 +30,7 @@ class User(AbstractUser):
     place_of_work = models.CharField(max_length=255, blank=True, null=True)
     # Bank details for refund of caution fees
     bank_account_name = models.CharField(max_length=255, blank=True, null=True)
-    account_number = models.PositiveIntegerField(blank=True, null=True)
+    account_number = models.CharField(max_length=10, blank=True, null=True)
 
     # # @TODO force emails to be unique
     class Meta:
