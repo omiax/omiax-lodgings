@@ -18,7 +18,7 @@ import datetime
 
 def image_file_path(instance, filename):
     """Generate file path for lodge image"""
-    return '/'.join(['lodges', str(instance.lodge.name), filename])
+    return '/'.join(['lodges', str(instance.lodge.name).replace(' ', '_'), filename])
 
 
 STATE_CHOICES = [

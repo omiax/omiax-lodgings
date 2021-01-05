@@ -181,7 +181,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
-LANGUAGE_CODE = "en-NG"
+LANGUAGE_CODE = "en-us"
 
 # @TODO change later
 # TIME_ZONE = "UTC"
@@ -212,6 +212,10 @@ AUTH_USER_MODEL = "user.User"
 # CSP_FRAME_ANCESTORS = ["'self'", "http://127.0.0.1:3000"]
 
 # X_FRAME_OPTIONS = 'ALLOW-FROM http://127.0.0.1:3000'
+
+TINYMCE_DEFAULT_CONFIG = {
+    "language": "en"
+}
 
 # TINYMCE_DEFAULT_CONFIG = {
 #     'cleanup_on_startup': True,
