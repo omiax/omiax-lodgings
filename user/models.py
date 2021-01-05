@@ -60,7 +60,7 @@ def password_reset_token_created(sender, instance, reset_password_token, *args,
     # the right form -> http://localhost:3000/confirmpassword/?tk=tokenhere
     # the current form -> /api/password_reset/?token=0514ef7a4ddaafc90b3ef63da4c4e33fe2d    # noqa
 
-    email_plaintext_message = "http://139.162.231.92/confirmpassword/?tk={}".format(
+    email_plaintext_message = "http://omiaxapartments.com/confirmpassword/?tk={}".format(
         reset_password_token.key)
 
     send_mail(
