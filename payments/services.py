@@ -176,10 +176,10 @@ def send_receipt(instance):
     '''
     # send receipt in email
 
-    # n = Notification(receiver=instance.tenant,
-    #                  topic="Payment Verification",
-    #                  message=f"Your payment for {instance.lodge.name} of {instance.amount} Naira is confirmed")
-    # n.save()
+    n = Notification(receiver=instance.tenant,
+                     topic="Payment Verification",
+                     message=f"Your payment for {instance.lodge.name} of {instance.amount} Naira is confirmed")
+    n.save()
 
     # user = User.objects.get(id=instance.tenant_id)
     user_full_name = f"{instance.tenant.first_name} {instance.tenant.last_name}"
