@@ -63,20 +63,15 @@ class LodgeSerializer(serializers.HyperlinkedModelSerializer):
     lodge_listing = serializers.HyperlinkedIdentityField(
         view_name='lodge:lodge-detail', lookup_field='pk')
 
-    # image = serializers.ImageField(max_length=None,
-    #                                allow_empty_file=True,
-    #                                use_url=True,
-    #                                required=False)  #
-
     # tenants = UserSerializer(read_only=True, many=True, allow_null=True)
     lodge_images = LodgeImageSerializer(read_only=True, many=True, allow_null=True)
 
     class Meta:
         model = models.Lodge
         fields = [
-            'id', 'name', 'address', 'state', 'water', 'electricity',
-            'num_of_rooms', 'details', 'standard_price',
-            'caution_deposit', 'agreement', 'lodge_images', 'rooms_listing', 'lodge_listing'
+            'id', 'name', 'address', 'state', 'water', 'electricity', 'fencing', 'tar_road',
+            'num_of_flats', 'details', 'standard_price', 'caution_deposit', 'agreement',
+            'lodge_images', 'rooms_listing', 'lodge_listing'
             # 'tenants',
         ]
         read_only_fields = ('id', )

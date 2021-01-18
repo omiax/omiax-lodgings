@@ -29,12 +29,20 @@ class User(AbstractUser):
     occupation = models.CharField(max_length=255, blank=True, null=True)
     place_of_work = models.CharField(max_length=255, blank=True, null=True)
     # Bank details for refund of caution fees
-    bank_account_name = models.CharField(max_length=255, blank=True, null=True)
-    account_number = models.CharField(max_length=10, blank=True, null=True)
 
     # # @TODO force emails to be unique
     class Meta:
         unique_together = ('email', )
+
+
+class UserBankInfo(models.Model):
+    tenant = models.ForeignKey(settings.AUTH_USER_MODEL, models.CASCADE, related_name="bank_details")
+    bank_name = models.CharField(max_length=255, blank=True, null=True)
+    account_name = models.CharField(max_length=255, blank=True, null=True)
+    account_number = models.CharField(max_length=10, blank=True, null=True)
+
+    def __str__(self):
+        return f'{self.bank_name} - {self.account_name} - {self.account_number}'
 
 
 class EmergencyInfo(models.Model):

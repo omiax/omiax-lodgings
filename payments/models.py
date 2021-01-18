@@ -30,6 +30,9 @@ class Payment(models.Model):
     lodge = models.ForeignKey(Lodge, models.SET_NULL, blank=True, null=True)
     room = models.ForeignKey(Room, models.SET_NULL, blank=True, null=True)
 
+    # for display to user
+    lodge_name = models.CharField(max_length=255, null=True, blank=True)
+
     tenant_name = models.CharField(max_length=255, blank=True)
     amount = models.DecimalField(default=0.00, max_digits=12, decimal_places=2)
     rent_start_date = models.DateField(blank=True, null=True)

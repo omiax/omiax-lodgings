@@ -46,8 +46,8 @@ class LogoutAndBlacklistRefreshTokenForUserView(APIView):
 
 
 class UpdateUserDetail(CreateModelMixin, generics.RetrieveUpdateAPIView):
-    permission_classes = (permissions.AllowAny, )
-    authentication_classes = ()
+    # permission_classes = (permissions.AllowAny, )
+    # authentication_classes = ()
 
     """
         A viewset for viewing and editing user instances.

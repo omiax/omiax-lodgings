@@ -10,7 +10,7 @@ class TestModels(TestCase):
         self.lodge1 = Lodge.objects.create(name="Lodge 1",
                                            address="Lodge Address",
                                            state="Akwa Ibom",
-                                           num_of_rooms=3,
+                                           num_of_flats=3,
                                            standard_price=3000.00)
         self.rooms1 = Room.objects.filter(lodge=self.lodge1)
         self.user = User.objects.create(username='jacob',
@@ -19,7 +19,7 @@ class TestModels(TestCase):
 
     def test_lodge_is_created(self):
         self.assertEquals(self.lodge1.standard_price, 3000.00)
-        self.assertEquals(self.lodge1.num_of_rooms, 3)
+        self.assertEquals(self.lodge1.num_of_flats, 3)
 
     def test_room_is_created(self):
         self.assertTrue(self.rooms1.exists())

@@ -2,10 +2,6 @@ from dateutil.relativedelta import relativedelta
 from django.db import models
 from django.conf import settings
 
-from django.core.validators import MaxValueValidator, MinValueValidator
-
-# https://stackoverflow.com/questions/3648421/only-accept-a-certain-file-type-in-filefield-server-side
-# from django.core.validators import FileExtensionValidator
 
 from tinymce.models import HTMLField
 import uuid
@@ -68,10 +64,12 @@ class Lodge(models.Model):
     address = models.CharField(max_length=255)
     state = models.CharField(max_length=80, choices=STATE_CHOICES)
     country = models.CharField(max_length=100, default="Nigeria")
-    # image = models.ImageField(blank=True, null=True, upload_to=image_file_path)
     water = models.BooleanField(blank=True, null=True)
     electricity = models.BooleanField(blank=True, null=True)
-    num_of_rooms = models.PositiveSmallIntegerField(null=False)
+    # fencing and tarred roads
+    fencing = models.BooleanField(blank=True, null=True)
+    tar_road = models.BooleanField(blank=True, null=True)
+    num_of_flats = models.PositiveSmallIntegerField(null=False)
     details = models.CharField(max_length=100, blank=True, null=True)
     owner = models.CharField(default="omiax",
                              max_length=100,
@@ -81,12 +79,10 @@ class Lodge(models.Model):
                                          max_digits=8,
                                          decimal_places=2)
 
-    caution_deposit = models.IntegerField(
-        null=True,
-        blank=True,
-        default=3,
-        validators=[MaxValueValidator(100),
-                    MinValueValidator(1)])
+    caution_deposit = models.DecimalField(null=True,
+                                          blank=True,
+                                          max_digits=8,
+                                          decimal_places=2)
     agreement = HTMLField(blank=True, null=True)
 
     # def save(self, *args, **kwargs):

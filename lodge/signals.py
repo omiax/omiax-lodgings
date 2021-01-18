@@ -9,12 +9,12 @@ from lodge.models import Lodge, Room
 @receiver(post_save, sender=Lodge)
 def generate_rooms(sender, instance, created, **kwargs):
     if created:
-        room_nums = instance.num_of_rooms
+        room_flats = instance.num_of_flats
         objs = [
             Room(lodge=instance,
                  room_number=i,
                  room_price=instance.standard_price)
-            for i in range(1, room_nums + 1)
+            for i in range(1, room_flats + 1)
         ]
         Room.objects.bulk_create(objs)
 

@@ -18,8 +18,9 @@ class LodgeImageAdmin(admin.StackedInline):
 class LodgeAdmin(admin.ModelAdmin):
     inlines = [LodgeImageAdmin]
     list_display = [
-        'name', 'address', 'state', 'num_of_rooms', 'details', 'owner'
+        'name', 'address', 'state', 'num_of_flats', 'details', 'owner'
     ]
+
     # readonly_fields = ["front_image"]
 
     # def front_image(self, obj):

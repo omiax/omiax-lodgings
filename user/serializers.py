@@ -59,15 +59,23 @@ class EmergencyInfoSerializer(serializers.ModelSerializer):
                   'place_of_work', 'phone')
 
 
+class UserBankInfoSerializer(serializers.ModelSerializer):
+    '''User Bank Information'''
+
+    class Meta:
+        model = models.UserBankInfo
+        fields = ('tenant', 'bank_name', 'account_name', 'account_number')
+
+
 class UserDetailSerializer(WritableNestedModelSerializer):
     """personal details
-    state_of_origin, occupation, place_of_work, bank_account_name,
-    account_number
+    state_of_origin, occupation, place_of_work,
     """
     emergency = EmergencyInfoSerializer(allow_null=True)
+    bank_details = UserBankInfoSerializer(many=True, allow_null=True)
 
     class Meta:
         model = models.User
         fields = ('id', 'state_of_origin', 'occupation', 'place_of_work',
-                  'bank_account_name', 'account_number', 'emergency')
+                  'bank_details', 'emergency')
         read_only_fields = ('id',)

@@ -23,6 +23,7 @@ def verify_payment(sender, instance, **kwargs):
     instance.rent_start_date = datetime.date.today()
     instance.rent_end_date = datetime.date.today() + datetime.timedelta(weeks=52)  # 47.9
     instance.terms_agreed = True
+    instance.lodge_name = instance.lodge.name
 
     if instance.manual_pay:
         pass
@@ -71,5 +72,7 @@ def book_room(sender, instance, created, **kwargs):
             terms_agreed=instance.terms_agreed,
             occupied=True,
         )
+
+        async_task("payments.services.send_payment_sms", instance)
 
         async_task("payments.services.send_receipt", instance)

@@ -1,6 +1,7 @@
 from django.contrib import admin
-from payments import models
 from django.utils.translation import gettext as _
+
+from payments import models
 
 
 class PaymentAdmin(admin.ModelAdmin):
@@ -11,6 +12,7 @@ class PaymentAdmin(admin.ModelAdmin):
         "rent_start_date",
         "rent_end_date",
         "transaction_id",
+        "lodge_name",
         "verified",
     ]
     # list_editable = ('verified',)
@@ -18,7 +20,7 @@ class PaymentAdmin(admin.ModelAdmin):
     fieldsets = ((_("Payment Details"), {
         "fields":
         ("tenant", "lodge", "room", "tenant_name", "amount", "rent_start_date",
-         "rent_end_date", "transaction_id", "terms_agreed", "verified", "manual_pay",
+         "rent_end_date", "transaction_id", "terms_agreed", "verified", "lodge_name", "manual_pay",
          "payment_image")
     }), (_("Transaction Information"), {
         "fields":

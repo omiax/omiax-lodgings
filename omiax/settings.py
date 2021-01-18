@@ -53,6 +53,8 @@ INSTALLED_APPS = [
     "user",
     "lodge",
     "payments",
+    "notification",
+    "contact",
 ]
 
 
@@ -214,7 +216,8 @@ AUTH_USER_MODEL = "user.User"
 # X_FRAME_OPTIONS = 'ALLOW-FROM http://127.0.0.1:3000'
 
 TINYMCE_DEFAULT_CONFIG = {
-    "language": "en"
+    "language": "en",
+    "height": 380
 }
 
 # TINYMCE_DEFAULT_CONFIG = {

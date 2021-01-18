@@ -10,6 +10,12 @@ from user import models
 # admin.site.register(models.User, CustomUserAdmin)
 
 
+class UserBankInfoInline(admin.StackedInline):
+    model = models.UserBankInfo
+    extra = 1
+    max_num = 2
+
+
 class EmergencyInfoInline(admin.StackedInline):
     model = models.EmergencyInfo
 
@@ -18,6 +24,7 @@ class UserAdmin(BaseUserAdmin):
     ordering = ["id"]
     list_display = ["username", "phone_number", "email", "get_lodge"]
     inlines = [
+        UserBankInfoInline,
         EmergencyInfoInline,
     ]
     fieldsets = (
@@ -39,9 +46,7 @@ class UserAdmin(BaseUserAdmin):
                     "state_of_origin",
                     "occupation",
                     "place_of_work",
-                    # Bank details for caution fees refund
-                    "bank_account_name",
-                    "account_number",
+
                 )
             },
         ),
@@ -62,6 +67,9 @@ class UserAdmin(BaseUserAdmin):
                 "username",
                 "password1",
                 "password2",
+                "first_name",
+                "last_name",
+                "email",
                 "country_code",
                 "phone_number",
             ),
@@ -76,6 +84,10 @@ class UserAdmin(BaseUserAdmin):
 
     def get_lodge(self, obj):
         return list(obj.tenants.all())
+
+
+class UserBankInfoAdmin(admin.ModelAdmin):
+    list_display = ['tenant', 'bank_name', 'account_name', 'account_number']
 
 
 class EmergencyInfoAdmin(admin.ModelAdmin):

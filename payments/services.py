@@ -25,10 +25,16 @@ from reportlab.lib.enums import TA_CENTER, TA_RIGHT
 
 import os
 import datetime
+import requests
+from environ import Env
+
+from notification.models import Notification
+
+env = Env()
 
 User = get_user_model()
 
-
+# https://www.bulksmsnigeria.com/api/v1/sms/create?api_token=1LyRVE2FndEpDpNOzuamaTrc02pP5wEoHXK4T8ne4ciM37VSjSVu1Xpkyjk1&from=BulkSMS.ng&to=2348071501239&body=Welcome&dnd=2
 file_path = os.path.join(settings.STATIC_ROOT, "logo/OmiaxLogo-x2.png")
 
 
@@ -110,7 +116,10 @@ def createReceiptPDF(name, lodge, amount, transaction_id, start_date, end_date):
         Paragraph(
             "Date: " + date.strftime("%d-%m-%Y"),
             ParagraphStyle(
-                name="Date", fontName="Times-Italic", fontSize=12, alignment=TA_RIGHT
+                name="Date",
+                fontName="Times-Italic",
+                fontSize=12,
+                alignment=TA_RIGHT
             ),
         )
     )
@@ -140,14 +149,44 @@ def createReceiptPDF(name, lodge, amount, transaction_id, start_date, end_date):
     return res
 
 
+def send_payment_sms(instance):
+    '''Send text message to tenant for verified payments to tenant'''
+    # send confirmation of sms
+
+    body = f"Your payment of {instance.amount} for {instance.lodge.name} \
+    from {instance.rent_start_date} to {instance.rent_end_date} is confirmed"
+
+    payload = {"api_token": env("BULKSMS_TK"),
+               "from": "omiaxapartments.com",
+               "to": instance.tenant.phone_number,
+               "body": body,
+               "dnd": "2"}
+
+    requests.get("https://www.bulksmsnigeria.com/api/v1/sms/create", params=payload)
+
+
 def send_receipt(instance):
-    # send receipt email here
-    user = User.objects.get(id=instance.tenant_id)
-    user_full_name = f"{user.first_name} {user.last_name}"
+    '''
+    send email with receipt attached for verified payments to tenant
+
+    Parameters
+    ----------
+    instance : object
+        payment instance
+    '''
+    # send receipt in email
+
+    # n = Notification(receiver=instance.tenant,
+    #                  topic="Payment Verification",
+    #                  message=f"Your payment for {instance.lodge.name} of {instance.amount} Naira is confirmed")
+    # n.save()
+
+    # user = User.objects.get(id=instance.tenant_id)
+    user_full_name = f"{instance.tenant.first_name} {instance.tenant.last_name}"
 
     subject = "Omiax Apartments [Receipt]"
     message = "The receipt of your recent payment is attached below"
-    emails = [user.email]
+    emails = [instance.tenant.email]
 
     mail = EmailMessage(subject, message, settings.EMAIL_HOST_USER, emails)
     # name, lodge, amount, transaction_id, start_date, end_date
