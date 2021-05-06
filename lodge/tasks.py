@@ -2,6 +2,8 @@ from django.utils import timezone
 from django.core.mail import send_mail
 from django.conf import settings
 
+import datetime
+
 
 from lodge.models import Room
 from notification.models import Notification, StaffNotificationList
@@ -38,7 +40,12 @@ def check_expired_rooms():
     staff_list = StaffNotificationList.objects.all()
     tenants_list = []
 
-    within_three_months = Room.objects.filter(rent_end_date__month__lte=3)
+    # within_three_months = Room.objects.filter(rent_end_date__month__lte=3)
+
+    today_date = datetime.date.today()
+    # three_from_today = datetime.date(today_date.year, today_date.month+3, 1)
+    three_from_today = datetime.datetime.now() + datetime.timedelta(days=90)
+    within_three_months = Room.objects.filter(rent_end_date__month__range=(today_date.month, three_from_today.month))
 
     if within_three_months:
         for room in within_three_months:
