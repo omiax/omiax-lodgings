@@ -70,6 +70,7 @@ Q_CLUSTER = {
     'retry': 120,
     'queue_limit': 50,
     'bulk': 10,
+    'max_attempts': 2,
     "orm": "default",  # Use Django's ORM + database for broker
 }
 
