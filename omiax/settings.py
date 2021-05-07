@@ -31,7 +31,7 @@ SECRET_KEY = env("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool("DEBUG")
 
-ALLOWED_HOSTS = [x for x in env.list('ALLOWED_HOSTS')]
+ALLOWED_HOSTS = [x for x in env.list('ALLOWED_HOSTS')] + ["admin.omiaxapartments.com"]
 
 # Application definition
 
