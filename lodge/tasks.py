@@ -59,11 +59,13 @@ def check_expired_rooms():
             tenants_list.append(f'{room.lodge.name}, room {room.room_number} - \
                                 {room.tenant.username}, {room.tenant.email} - {room.tenant.phone_number}')
 
-            subject = "Omiax Apartments [Rent Reminder]"
-            message = f"Your Rent for room: {room.room_number} at {room.lodge.name} is due to expire!"
-            emails = [room.tenant.email]
+            # send receipt in email
+            if "@temp-email.com" not in room.tenant.email:
+                subject = "Omiax Apartments [Rent Reminder]"
+                message = f"Your Rent for room: {room.room_number} at {room.lodge.name} is due to expire!"
+                emails = [room.tenant.email]
 
-            send_mail(subject, message, settings.EMAIL_HOST_USER, emails)
+                send_mail(subject, message, settings.EMAIL_HOST_USER, emails)
 
         if tenants_list:
             # SEND EMAIL

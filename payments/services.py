@@ -174,33 +174,35 @@ def send_receipt(instance):
     instance : object
         payment instance
     '''
-    # send receipt in email
+    # send receipt in notification
 
     n = Notification(receiver=instance.tenant,
                      topic="Payment Verification",
                      message=f"Your payment for {instance.lodge.name} of {instance.amount} Naira is confirmed")
     n.save()
 
-    # user = User.objects.get(id=instance.tenant_id)
-    user_full_name = f"{instance.tenant.first_name} {instance.tenant.last_name}"
+    # send receipt in email
+    if "@temp-email.com" not in instance.tenant.email:
+        # user = User.objects.get(id=instance.tenant_id)
+        user_full_name = f"{instance.tenant.first_name} {instance.tenant.last_name}"
 
-    subject = "Omiax Apartments [Receipt]"
-    message = "The receipt of your recent payment is attached below"
-    emails = [instance.tenant.email]
+        subject = "Omiax Apartments [Receipt]"
+        message = "The receipt of your recent payment is attached below"
+        emails = [instance.tenant.email]
 
-    mail = EmailMessage(subject, message, settings.EMAIL_HOST_USER, emails)
-    # name, lodge, amount, transaction_id, start_date, end_date
-    pdf = createReceiptPDF(
-        user_full_name,
-        instance.lodge.name,
-        instance.amount,
-        instance.transaction_id,
-        instance.rent_start_date,
-        instance.rent_end_date,
-    )
+        mail = EmailMessage(subject, message, settings.EMAIL_HOST_USER, emails)
+        # name, lodge, amount, transaction_id, start_date, end_date
+        pdf = createReceiptPDF(
+            user_full_name,
+            instance.lodge.name,
+            instance.amount,
+            instance.transaction_id,
+            instance.rent_start_date,
+            instance.rent_end_date,
+        )
 
-    mail.attach("Receipt.pdf", pdf, "application/pdf")
-    try:
-        mail.send(fail_silently=False)
-    except SMTPException:
-        return HttpResponse("Mail Not Sent")
+        mail.attach("Receipt.pdf", pdf, "application/pdf")
+        try:
+            mail.send(fail_silently=False)
+        except SMTPException:
+            return HttpResponse("Mail Not Sent")
