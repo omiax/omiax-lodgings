@@ -22,7 +22,8 @@ env = Env()
 def verify_payment(sender, instance, **kwargs):
     instance.terms_agreed = True
     instance.lodge_name = instance.lodge.name
-    if instance.rent_start_date is None or instance.rent_end_date is None:
+
+    if not instance.rent_start_date or not instance.rent_end_date:
         instance.rent_start_date = datetime.date.today()
         instance.rent_end_date = datetime.date.today() + datetime.timedelta(weeks=52)  # 47.9
 
