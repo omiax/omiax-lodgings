@@ -20,10 +20,11 @@ env = Env()
 
 @receiver(pre_save, sender=Payment, dispatch_uid="verfiy_payment")
 def verify_payment(sender, instance, **kwargs):
-    instance.rent_start_date = datetime.date.today()
-    instance.rent_end_date = datetime.date.today() + datetime.timedelta(weeks=52)  # 47.9
     instance.terms_agreed = True
     instance.lodge_name = instance.lodge.name
+    if instance.rent_start_date is None or instance.rent_end_date is None:
+        instance.rent_start_date = datetime.date.today()
+        instance.rent_end_date = datetime.date.today() + datetime.timedelta(weeks=52)  # 47.9
 
     if instance.manual_pay:
         pass
