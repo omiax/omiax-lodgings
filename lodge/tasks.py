@@ -57,7 +57,8 @@ def check_expired_rooms():
             n.save()
 
             tenants_list.append(f'{room.lodge.name}, room {room.room_number} - \
-                                {room.tenant.username}, {room.tenant.email} - {room.tenant.phone_number}')
+                                {room.tenant.first_name} {room.tenant.last_name} - {room.tenant.phone_number} | \
+                                    {room.rent_start_date} - {room.rent_end_date}.')
 
             # send receipt in email
             if "@temp-email.com" not in room.tenant.email:
