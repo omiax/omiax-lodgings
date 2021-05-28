@@ -95,5 +95,6 @@ class EmergencyInfoAdmin(admin.ModelAdmin):
 
 
 admin.site.site_header = 'Omiax Apartments Control'
+admin.site.site_url = 'https://omiaxapartments.com'
 admin.site.register(models.User, UserAdmin)
 admin.site.register(models.EmergencyInfo)
